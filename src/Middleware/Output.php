@@ -9,7 +9,7 @@ class Output implements MiddlewareInterface{
 
 	protected $middleware;
 
-	public function __construct($middleware){
+	public function __construct(MiddlewareInterface $middleware){
 
 		$this->middleware = $middleware;
 	

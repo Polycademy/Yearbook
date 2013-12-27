@@ -31,4 +31,11 @@ abstract class AbstractController implements MiddlewareInterface{
 
 	}
 
+	//can this be overwritten in the child object?
+	protected function options(){
+
+		//this method should instinctvely return a list of methods available for use
+
+	}
+
 }

@@ -30,7 +30,7 @@ class Loader{
 
 		$controller = $this->loader->make($controller);
 		$request = $this->loader->make('Symfony\Component\HttpFoundation\Request');
-		$stack = $this->loader->make('Yearbook\Middleware\StackBuilder');
+		$builder = $this->loader->make('Yearbook\Middleware\MiddlewareBuilder');
 
 		//add the request_parameters to the attributes object of the $request instance
 		//the request parameters will store the URL's stored named parameters from the Router
@@ -40,13 +40,19 @@ class Loader{
 		//as the final middleware
 		$middleware = ($middleware) ? $middleware : $this->middleware;
 		foreach($middleware as $handler){
-			$stack->push($this->loader->make($handler));
+			$builder->push($handler);
 		}
-		$stack->resolve($controller);
+		$builder->resolve($request, $controller);
+
+		//You cannot push a fully instantiated middleware into the builder, since it needs to be constructed
+		//as an onion
+		//So the Loader itself needs to also act as the MiddlewareBuilder
 
 	}
 
 	protected function register(){
+
+		//CONFIGURATION
 
 		//ERROR needs to be able to be passed in as a parameter to classes that need the error object as $error();
 		$error = function($message, $code, $previous){
@@ -62,6 +68,9 @@ class Loader{
 		};
 		$this->loader->share('Monolog\Logger');
 		$this->loader->delegate('Monolog\Logger', $loggerFactory);
+
+		//ROUTER
+		$this->loader->share('Klein\Klein');
 
 		//REQUEST
 		$requestFactory = function(){

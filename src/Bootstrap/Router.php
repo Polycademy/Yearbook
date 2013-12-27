@@ -8,9 +8,9 @@ class Router{
 
 	public function __construct($loader){
 
-		$loader->setMiddleware($this->globalMiddleware());
 		$this->loader = $loader;
-		$this->register(new Klien\Klien);
+		$this->loader->setMiddleware($this->globalMiddleware());
+		$this->register($this->loader->make('Klein\Klein'));
 
 	}
 

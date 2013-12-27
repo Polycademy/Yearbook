@@ -18,4 +18,20 @@ class Timeline extends AbstractController{
 
 	}
 
+	public function post(){
+
+	}
+
+	public function put(){
+
+	}
+
+	public function patch(){
+
+	}
+
+	public function delete(){
+		
+	}
+
 }
