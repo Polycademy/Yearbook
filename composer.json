@@ -1,20 +1,16 @@
 {
 	"require": {
 		"php": ">=5.4.12",
-		"pimple/pimple": "1.1.0",
-		"klein/klein": "2.0.2",
 		"monolog/monolog": "1.7.0",
-		"robmorgan/phinx": "0.2.9"
+		"rdlowrey/auryn": "0.11.0",
+		"robmorgan/phinx": "0.2.9",
+		"klein/klein": "2.0.2",
+		"symfony/http-foundation": "2.3.8"
 	},
 	"require-dev": {
 		"codeception/codeception": "1.7.0.2"
 	},
 	"config": {
 		"bin-dir": "bin/"
-	},
-	"autoload": {
-		"psr-0": {
-			"": "src"
-		}
 	}
 }

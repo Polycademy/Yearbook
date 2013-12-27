@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules;
+namespace Yearbook\Modules;
 
-use Storage\MySQLAdapter;
+use Yearbook\Storage\MySQLAdapter;
 
 class TimelineModel{
 

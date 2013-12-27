@@ -1,38 +1,99 @@
 <?php
 
-//the bootstrap will load the pimple IOC
-//Which will bring in all the configuration, and all of the controllers, modules, libraries
-//Bootstrap can also bring in any secrets..?
-//Since the configuration will be stored inside Pimple's IOC array, this can then be inserted into any controllers that require it
+namespace Yearbook\Bootstrap;
 
-$loader = new Pimple;
+class Loader{
 
-$loader['Logger'] = $loader->share(function($c){
-	//get the logger object with the Monolog
-});
+	protected $loader;
+	protected $middleware = [];
 
-//it becomes possible to do this: throw $error() no longer throw new Exception or it could be possible to do like Modules\Error::create()
-$loader['Error'] = function($message = null, $code = 0, $previous = null) use ($loader){
-	return new Modules\Error($message, $code, $previous, $loader['logger']);
-};
+	public function __construct(){
 
-$loader['Config'] = $loader->share(function($c){
-	//get the config object loading all the necessary configuration from $_ENV...
-});
+		$this->loader = new Auryn\Provider(new Auryn\ReflectionPool);
+		$this->register();
 
-$loader['Database'] = $loader->share(function($c){
-	$dbh = new PDO('mysql:host=localhost;dbname=yearbook', 'root', '', array(
-		PDO::ATTR_PERSISTENT	=> true
-	));
-	return $dbh;
-});
+	}
 
-$loader['Storage'] = $loader->share(function($c){
-	$storage = new Storage\MySQLAdapter($c['Database']);
-	return $storage;
-});
+	public function __call($method, $args){
 
-$loader['Models/Timeline'] = $loader->share(function($c){
-	$timeline_model = new Modules\TimelineModel($c['Storage']);
-	return $timeline_model;
-});
+		return call_user_func_array(array($this->loader, $method), $args);
+
+	}
+
+	public function setMiddleware(array $middleware){
+
+		$this->middleware = $middleware;
+
+	}
+
+	public function handleController($controller, $request_parameters, array $middleware = null){
+
+		$controller = $this->loader->make($controller);
+		$request = $this->loader->make('Symfony\Component\HttpFoundation\Request');
+		$stack = $this->loader->make('Yearbook\Middleware\StackBuilder');
+
+		//add the request_parameters to the attributes object of the $request instance
+		//the request parameters will store the URL's stored named parameters from the Router
+
+
+		//need to use the StackBuilder (something similar) to build the middleware stack with the controller
+		//as the final middleware
+		$middleware = ($middleware) ? $middleware : $this->middleware;
+		foreach($middleware as $handler){
+			$stack->push($this->loader->make($handler));
+		}
+		$stack->resolve($controller);
+
+	}
+
+	protected function register(){
+
+		//ERROR needs to be able to be passed in as a parameter to classes that need the error object as $error();
+		$error = function($message, $code, $previous){
+			return new Yearbook\Modules\Error($message, $code, $previous, $this->loader->make('Monolog\Logger'));
+		};
+
+		//LOGGER
+		$loggerFactory = function(){
+			$logger = new Monolog\Logger('Yearbook');
+			$logger->pushHandler(new Monolog\StreamHandler(__DIR__ . '/../../logs/yearbook.log', Monolog\Logger::NOTICE));
+			$logger->pushHandler(new Monolog\FirePHPHandler());
+			return $logger;
+		};
+		$this->loader->share('Monolog\Logger');
+		$this->loader->delegate('Monolog\Logger', $loggerFactory);
+
+		//REQUEST
+		$requestFactory = function(){
+			$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+			//php-fpm doesn't support getallheaders yet: https://bugs.php.net/bug.php?id=62596
+			//however apache and fast-cgi does support getallheaders
+			if(function_exists('getallheaders')){
+				$headers = getallheaders();
+				if(isset($headers['Authorization'])){
+					$request->headers->set('Authorization', $headers['Authorization']);
+				}
+			}
+			return $request;
+		};
+		$this->loader->share('Symfony\Component\HttpFoundation\Request');
+		$this->loader->delegate('Symfony\Component\HttpFoundation\Request', $requestFactory);
+
+		//PDO
+		$this->loader->share('PDO');
+		$this->loader->define('PDO', [
+			':dsn'	=> 'mysql:host=localhost;dbname=yearbook',
+			':username'	=> 'root',
+			':password'	=> '',
+			':driver_options'	=> [
+				\PDO::ATTR_PERSISTENT	=> true
+			]
+		]);
+
+		$this->loader->share('Yearbook\Storage\MySQLAdapter');
+
+		$this->loader->share('Yearbook\Modules\TimelineModel');
+
+	}
+
+}

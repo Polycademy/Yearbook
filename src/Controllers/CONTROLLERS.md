@@ -22,3 +22,5 @@ patch /1 (specific)
 delete / (all or specific)
 delete /1 (specific)
 options / (all available http methods at this url point)
+
+The API structure is dictated by the Controller's names and the router.

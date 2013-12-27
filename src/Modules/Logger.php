@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules;
+namespace Yearbook\Modules;
 
 use Monolog\Logger as Monolog;
 

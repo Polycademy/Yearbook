@@ -1,6 +1,6 @@
 <?php
 
-namespace Storage;
+namespace Yearbook\Storage;
 
 use PDO;
 use PDOException;

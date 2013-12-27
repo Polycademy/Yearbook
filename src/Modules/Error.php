@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules;
+namespace Yearbook\Modules;
 
 use Exception;
-use Modules\Logger;
+use Yearbook\Modules\Logger;
 
 //Exception: http://php.net/manual/en/language.exceptions.extending.php
 //use http://tools.ietf.org/html/rfc5424 as error codes!

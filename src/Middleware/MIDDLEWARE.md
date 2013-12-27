@@ -1,4 +1,4 @@
 MIDDLEWARE
 ==========
 
-Middleware is separated into advisors and decorators. The advisors advise upon the request. The decorators decorate the responses.
+Middleware are like onion layers. A request and response goes through them all.
