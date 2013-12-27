@@ -9,21 +9,16 @@ class Router{
 	public function __construct($loader){
 
 		$this->loader = $loader;
-		$this->loader->setMiddleware($this->globalMiddleware());
 		$this->register($this->loader->make('Klein\Klein'));
 
 	}
 
-	protected globalMiddleware(){
+	protected function register($router){
 
 		//outer to inner
-		return [
+		$this->loader->middleware([
 			'Yearbook\Middleware\Output'
-		];
-
-	}
-
-	protected function register($router){
+		]);
 
 		//BIG PROBLEM WITH KLEIN: (simultaneous route matching)
 		//respond to all! (but there's no terminate upon first match) SEE: https://github.com/chriso/klein.php/issues/156
@@ -37,7 +32,7 @@ class Router{
 
 		return function($request_parameters) use ($controller, $middleware){
 
-			$this->loader->handleController($controller, $request_parameters, $middleware);
+			$this->loader->kernel($controller, $request_parameters, $middleware);
 
 		};
 

@@ -20,13 +20,13 @@ class Loader{
 
 	}
 
-	public function setMiddleware(array $middleware){
+	public function middleware(array $middleware){
 
 		$this->middleware = $middleware;
 
 	}
 
-	public function handleController($controller, $request_parameters, array $middleware = null){
+	public function kernel($controller, $request_parameters, array $middleware = null){
 
 		$controller = $this->loader->make($controller);
 		$request = $this->loader->make('Symfony\Component\HttpFoundation\Request');
