@@ -17,11 +17,14 @@ try{
 	$autoloader->register();
 	$autoloader->addNamespace('Yearbook', __DIR__ . '/../');
 
-	//IOC DI
+	//IOC Container
 	$loader = new Yearbook\Bootstrap\Loader;
 
+	//Kernel
+	$kernel = new Yearbook\Bootstrap\Kernel($loader);
+
 	//router
-	$router = new Yearbook\Bootstrap\Router($loader);
+	$router = new Yearbook\Bootstrap\Router($kernel);
 
 }catch(Exception $e){
 

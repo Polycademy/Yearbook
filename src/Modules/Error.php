@@ -62,6 +62,21 @@ class Error extends Exception{
 	//if the bootstrapper doe
 	//throw new Exception();
 	//throw $error
+	//Error::debug
+
+	//use Yearbook\Modules\Error;
+	//__construct(Error $error)
+	//throw $error->debug(...) (debug would create the Exception object)? Or it would create itself (using static method)
+	//or
+	//throw $error() -> calls __invoke to create a default error object
+	//or 
+	//throw Error::debug
+	//or
+	//thro $error($diagnotic, $error::DEBUG)
+	//
+	//logging could be done upon instantiation... but that won't work if the error object is injected, since it needs to be instantiated to be injected
+	//so perhaps logging is a captured thing
+	//DiagnosticErrorHandling middleware!
 
 	public function setMessage($message){
 
@@ -69,8 +84,14 @@ class Error extends Exception{
 	
 	}
 
+	public function __invoke(){
+		//
+	}
+
 	//these static functions should create exceptions with the correct codes!
 	public static function debug($message){
+
+		//use self::
 
 	}
 
