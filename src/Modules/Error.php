@@ -3,13 +3,20 @@
 namespace Yearbook\Modules;
 
 use Exception;
-use Yearbook\Modules\Logger;
 
 //Exception: http://php.net/manual/en/language.exceptions.extending.php
 //use http://tools.ietf.org/html/rfc5424 as error codes!
 
 class Error extends Exception{
 
+	const DEBUG = 100;
+	const INFO = 200;
+	const NOTICE = 250;
+	const WARNING = 300;
+	const ERROR = 400;
+	const CRITICAL = 500;
+	const ALERT = 550;
+	const EMERGENCY = 600;
 
 	//this is pure error object
 	//this represents a number of things
