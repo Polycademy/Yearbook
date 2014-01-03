@@ -17,6 +17,9 @@ try{
 	$autoloader->register();
 	$autoloader->addNamespace('Yearbook', __DIR__ . '/../');
 
+	//Initialising Default Configuration
+	$initialise = new Yearbook\Bootstrap\Initialise;
+
 	//IOC Container
 	$loader = new Yearbook\Bootstrap\Loader;
 
