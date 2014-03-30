@@ -1,6 +1,6 @@
 <?php
 
-namespace Yearbook\Bootstrap\Router;
+namespace Yearbook\Bootstrap;
 
 class Router{
 
